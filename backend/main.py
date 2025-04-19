@@ -7,13 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 
-# Define our models
+
 class WishlistItemBase(SQLModel):
     name: str = Field(index=True)
     description: Optional[str] = None
     url: Optional[str] = None
     downloaded: Optional[bool] = True
-    category: Optional[str] = None  # Added category field
+    category: Optional[str] = None  
 
 
 class WishlistItem(WishlistItemBase, table=True):
@@ -57,9 +57,9 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_db_and_tables()  # Your startup code
+    create_db_and_tables()  
     yield
-    # Optional shutdown code here
+    # TODO: Optional shutdown 
 
 
 app = FastAPI(lifespan=lifespan, title="Wishlist API")
@@ -99,9 +99,7 @@ def read_items(
 
 @app.get("/wishlist/search/", response_model=list[WishlistItemPublic])
 def search_items(
-    # Parameter without default comes first:
     session: SessionDep,
-    # Parameters with defaults follow:
     query: Optional[str] = None,
     category: Optional[str] = None,
     downloaded: Optional[bool] = None,
